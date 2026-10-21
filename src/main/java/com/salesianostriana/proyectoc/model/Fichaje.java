@@ -19,8 +19,10 @@ public class Fichaje {
     @Id @GeneratedValue
     private Long id;
     private LocalDateTime momento;
+
+    @Enumerated(EnumType.STRING)
     private Tipo tipo;
 
     @ManyToOne
-    private Empleado nombre;
+    private Empleado empleado;
 }
