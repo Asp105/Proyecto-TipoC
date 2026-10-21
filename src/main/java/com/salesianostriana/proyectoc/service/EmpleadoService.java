@@ -2,6 +2,9 @@ package com.salesianostriana.proyectoc.service;
 
 
 import com.salesianostriana.proyectoc.dto.EditEmpleadoDto;
+import com.salesianostriana.proyectoc.error.DepartamentoNoEncontradoException;
+import com.salesianostriana.proyectoc.error.EmpleadoNoEncontradoException;
+import com.salesianostriana.proyectoc.model.Departamento;
 import com.salesianostriana.proyectoc.model.Empleado;
 import com.salesianostriana.proyectoc.repository.DepartamentoRepository;
 import com.salesianostriana.proyectoc.repository.EmpleadoRepository;

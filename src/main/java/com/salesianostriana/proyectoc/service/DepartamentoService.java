@@ -1,6 +1,7 @@
 package com.salesianostriana.proyectoc.service;
 
 import com.salesianostriana.proyectoc.dto.EditDepartamentoDto;
+import com.salesianostriana.proyectoc.error.DepartamentoNoEncontradoException;
 import com.salesianostriana.proyectoc.model.Departamento;
 import com.salesianostriana.proyectoc.repository.DepartamentoRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ public class DepartamentoService {
 
     private final DepartamentoRepository departamentoRepository;
 
-    public List<Departamento> getAllProducts() {
+    public List<Departamento> getAllDepartamentos() {
         List<Departamento> result = departamentoRepository.findAll();
         if (result.isEmpty()) {
             throw new RuntimeException("Departamento no encontrado");

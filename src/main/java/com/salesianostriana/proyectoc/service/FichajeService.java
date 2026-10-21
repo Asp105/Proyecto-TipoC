@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class FichajesService {
+public class FichajeService {
 
     private final FichajeRepository fichajeRepository;
     private final EmpleadoRepository empleadoRepository;
