@@ -27,19 +27,23 @@ public class EmpleadoService {
 
     public Empleado getEmpleadoById(Long id) {
         return empleadoRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException(""));
+                .orElseThrow(()-> new EmpleadoNoEncontradoException(id));
     }
 
-    public Empleado addEmpleado(EditEmpleadoDto editEmpleadoDto) {
-        validateEmpleado(editEmpleadoDto);
-        return empleadoRepository.save(editEmpleadoDto.to());
+    public Empleado addEmpleado(EditEmpleadoDto dto) {
+        Empleado empleado = Empleado.builder()
+                .nombreCompleto(dto.nombreCompleto())
+                .cargo(dto.cargo())
+                .salario(dto.salario())
+                .build();
+
+        return empleadoRepository.save(empleado);
     }
 
     public Empleado updateEmpleado(Long id, EditEmpleadoDto editEmpleadoDto) {
 
         return empleadoRepository.findById(id)
                 .map(e -> {
-                        validateEmpleado(editEmpleadoDto);
                         e.setNombreCompleto(editEmpleadoDto.nombreCompleto());
                         e.setCargo(editEmpleadoDto.cargo());
                         e.setSalario(editEmpleadoDto.salario());
@@ -48,8 +52,15 @@ public class EmpleadoService {
                 .orElseThrow(() -> new RuntimeException(""));
     }
 
-    public void deleteEmpleado(Empleado empleado) {
-        empleadoRepository.delete(empleado);
+    public Empleado asignarDepartamento(Long empleadoId, Long departamentoId) {
+        Empleado empleado = getEmpleadoById(empleadoId);
+
+        Departamento departamento = departamentoRepository.findById(departamentoId)
+                .orElseThrow(() ->
+                        new DepartamentoNoEncontradoException(departamentoId));
+
+        empleado.setDepartamento(departamento);
+        return empleadoRepository.save(empleado);
     }
 
     public void deleteEmpleado (Long id) {
@@ -57,13 +68,4 @@ public class EmpleadoService {
     }
 
 
-    private void validateEmpleado(EditEmpleadoDto editEmpleadoDto) {
-        /*if (!StringUtils.hasText(editProductDto.name())
-                || !StringUtils.hasText(editProductDto.details())) {
-            throw new InvalidProductException("Product name and details are required");
-        }
-        if (editProductDto.price() < 0) {
-            throw new InvalidProductException("Price is required");
-        }*/
-    }
 }

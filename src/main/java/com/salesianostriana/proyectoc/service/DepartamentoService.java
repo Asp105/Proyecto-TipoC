@@ -24,19 +24,22 @@ public class DepartamentoService {
 
     public Departamento getDepartamentoById(Long id) {
         return departamentoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+                .orElseThrow(() -> new DepartamentoNoEncontradoException(id));
     }
 
-    public Departamento addProduct(EditDepartamentoDto editDepartamentoDto) {
-        validateDepartamento(editDepartamentoDto);
-        return departamentoRepository.save(editDepartamentoDto.to());
+    public Departamento addDepartamento(EditDepartamentoDto dto) {
+        return departamentoRepository.save(
+                Departamento.builder()
+                        .name(dto.name())
+                        .presupuesto(dto.presupuesto())
+                        .build()
+        );
     }
 
     public Departamento updateDepartamento (Long id, EditDepartamentoDto editDepartamentoDto) {
 
         return departamentoRepository.findById(id)
                 .map( d -> {
-                        validateDepartamento(editDepartamentoDto);
                         d.setName(editDepartamentoDto.name());
                         d.setPresupuesto(editDepartamentoDto.presupuesto());
                         return departamentoRepository.save(d);
@@ -46,23 +49,9 @@ public class DepartamentoService {
 
     }
 
-    public void deleteDepartamento(Departamento departamento) {
-        departamentoRepository.delete(departamento);
-    }
-
     public void deleteDepartamento(Long id) {
         departamentoRepository.deleteById(id);
     }
 
-
-    private void validateDepartamento(EditDepartamentoDto editDepartamentoDto) {
-        /*if (!StringUtils.hasText(editProductDto.name())
-                || !StringUtils.hasText(editProductDto.details())) {
-            throw new InvalidProductException("Product name and details are required");
-        }
-        if (editProductDto.price() < 0) {
-            throw new InvalidProductException("Price is required");
-        }*/
-    }
 
 }
