@@ -27,7 +27,7 @@ public class DepartamentoService {
                 .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
     }
 
-    public Departamento addProduct(EditDepartamentoDto editDepartamentoDto) {
+    public Departamento addDe(EditDepartamentoDto editDepartamentoDto) {
         validateDepartamento(editDepartamentoDto);
         return departamentoRepository.save(editDepartamentoDto.to());
     }

@@ -2,6 +2,7 @@ package com.salesianostriana.proyectoc.service;
 
 
 import com.salesianostriana.proyectoc.dto.EditEmpleadoDto;
+import com.salesianostriana.proyectoc.model.Departamento;
 import com.salesianostriana.proyectoc.model.Empleado;
 import com.salesianostriana.proyectoc.repository.DepartamentoRepository;
 import com.salesianostriana.proyectoc.repository.EmpleadoRepository;
@@ -32,6 +33,10 @@ public class EmpleadoService {
 
     public Empleado addEmpleado(EditEmpleadoDto editEmpleadoDto) {
         validateEmpleado(editEmpleadoDto);
+
+        Empleado e = editEmpleadoDto.to();
+
+        Departamento d = departamentoRepository.findById(editEmpleadoDto.departamentoId());
         return empleadoRepository.save(editEmpleadoDto.to());
     }
 

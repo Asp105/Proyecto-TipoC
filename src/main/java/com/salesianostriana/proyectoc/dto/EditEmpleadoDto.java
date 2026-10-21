@@ -10,7 +10,8 @@ import java.math.BigDecimal;
 public record EditEmpleadoDto (
         @NotBlank(message = "") String nombreCompleto,
         @NotBlank(message = "") String cargo,
-        @PositiveOrZero(message = "") BigDecimal salario
+        @PositiveOrZero(message = "") BigDecimal salario,
+        Long departamentoId
 )  {
     public Empleado to() {
         return Empleado.builder()
