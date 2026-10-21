@@ -27,7 +27,7 @@ public class FichajesService {
                 .orElseThrow(() -> new EmpleadoNoEncontradoException(empleadoId));
 
         fichajeRepository
-                .findFirstByEmpleadoIdOrderByMomentoDescIdDesc(empleadoId)
+                .findFirstByEmpleadoIdOrderByMomentoDesc(empleadoId)
                 .ifPresent(ultimo -> {
                     if (ultimo.getTipo() == tipoSolicitado) {
                         throw new FichajeDuplicadoException(
@@ -53,6 +53,6 @@ public class FichajesService {
         }
 
         return fichajeRepository
-                .findByEmpleadoIdOrderByMomentoDescIdDesc(empleadoId);
+                .findByEmpleadoIdOrderByMomentoDesc(empleadoId);
     }
 }
