@@ -21,7 +21,6 @@ public class DepartamentoService {
         return departamentoRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
     public Departamento getDepartamentoById(Long id) {
         return departamentoRepository.findById(id)
                 .orElseThrow(() -> new DepartamentoNoEncontradoException(id));
@@ -50,6 +49,7 @@ public class DepartamentoService {
     }
 
     public void deleteDepartamento(Long id) {
+        Departamento departamento = getDepartamentoById(id);
         departamentoRepository.deleteById(id);
     }
 

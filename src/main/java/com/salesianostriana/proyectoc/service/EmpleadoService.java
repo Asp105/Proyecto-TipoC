@@ -4,6 +4,7 @@ package com.salesianostriana.proyectoc.service;
 import com.salesianostriana.proyectoc.dto.EditEmpleadoDto;
 import com.salesianostriana.proyectoc.error.DepartamentoNoEncontradoException;
 import com.salesianostriana.proyectoc.error.EmpleadoNoEncontradoException;
+import com.salesianostriana.proyectoc.error.PresupuestoInsuficienteException;
 import com.salesianostriana.proyectoc.model.Departamento;
 import com.salesianostriana.proyectoc.model.Empleado;
 import com.salesianostriana.proyectoc.repository.DepartamentoRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -38,19 +40,70 @@ public class EmpleadoService {
                 .salario(dto.salario())
                 .build();
 
+        if (dto.departamentoId() != null) {
+            Departamento departamento = departamentoRepository
+                    .findById(dto.departamentoId())
+                    .orElseThrow(() ->
+                            new DepartamentoNoEncontradoException(dto.departamentoId()));
+
+            validarPresupuesto(departamento, empleado.getSalario(), null);
+            empleado.setDepartamento(departamento);
+        }
+
         return empleadoRepository.save(empleado);
     }
 
-    public Empleado updateEmpleado(Long id, EditEmpleadoDto editEmpleadoDto) {
+    private void validarPresupuesto(
+            Departamento departamento,
+            BigDecimal nuevoSalario,
+            Long empleadoId
+    ) {
+        if (departamento == null) {
+            return;
+        }
 
-        return empleadoRepository.findById(id)
-                .map(e -> {
-                        e.setNombreCompleto(editEmpleadoDto.nombreCompleto());
-                        e.setCargo(editEmpleadoDto.cargo());
-                        e.setSalario(editEmpleadoDto.salario());
-                        return empleadoRepository.save(e);
-                })
-                .orElseThrow(() -> new EmpleadoNoEncontradoException(id));
+        BigDecimal salariosActuales = empleadoRepository
+                .findByDepartamentoId(departamento.getId())
+                .stream()
+                .filter(e -> empleadoId == null || !empleadoId.equals(e.getId()))
+                .map(Empleado::getSalario)
+                .filter(salario -> salario != null)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal total = salariosActuales.add(nuevoSalario);
+
+        if (total.compareTo(departamento.getPresupuesto()) > 0) {
+            throw new PresupuestoInsuficienteException(
+                    "La suma de los salarios supera el presupuesto del departamento"
+            );
+        }
+    }
+
+    public Empleado updateEmpleado(Long id, EditEmpleadoDto dto) {
+        Empleado empleado = getEmpleadoById(id);
+
+        empleado.setNombreCompleto(dto.nombreCompleto());
+        empleado.setCargo(dto.cargo());
+        empleado.setSalario(dto.salario());
+        // Si el DTO trae departamentoId, se asigna ese departamento.
+        // Si es null, se conserva el departamento actual.
+        if (dto.departamentoId() != null) {
+            Departamento departamento = departamentoRepository
+                    .findById(dto.departamentoId())
+                    .orElseThrow(() ->
+                            new DepartamentoNoEncontradoException(dto.departamentoId()));
+
+            validarPresupuesto(departamento, dto.salario(), empleado.getId());
+            empleado.setDepartamento(departamento);
+        } else if (empleado.getDepartamento() != null) {
+            validarPresupuesto(
+                    empleado.getDepartamento(),
+                    dto.salario(),
+                    empleado.getId()
+            );
+        }
+
+        return empleadoRepository.save(empleado);
     }
 
     public Empleado asignarDepartamento(Long empleadoId, Long departamentoId) {
@@ -60,11 +113,18 @@ public class EmpleadoService {
                 .orElseThrow(() ->
                         new DepartamentoNoEncontradoException(departamentoId));
 
+        validarPresupuesto(
+                departamento,
+                empleado.getSalario(),
+                empleado.getId()
+        );
+
         empleado.setDepartamento(departamento);
         return empleadoRepository.save(empleado);
     }
 
     public void deleteEmpleado (Long id) {
+        Empleado empleado = getEmpleadoById(id);
         empleadoRepository.deleteById(id);
     }
 

@@ -8,10 +8,13 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public record EditDepartamentoDto (
-    @NotBlank(message = "EL nombre es obligatorio") String name,
 
-    @NotNull(message = "El presupuesto no puede ser nulo")
-    @PositiveOrZero(message = "El presupuesto es obligatorio") BigDecimal presupuesto
+    @NotBlank(message = "El nombre del departamento es obligatorio")
+    String name,
+
+    @NotNull(message = "El presupuesto es obligatorio")
+    @PositiveOrZero(message = "El presupuesto no puede ser negativo")
+    BigDecimal presupuesto
 )  {
     public Departamento to() {
         return Departamento.builder()
