@@ -1,7 +1,8 @@
 package com.salesianostriana.proyectoc.dto;
 
-import com.salesianostriana.proyectoc.model.Departamento;
+public class DepartamentoResponseDto {
 
+import com.salesianostriana.proyectoc.model.Departamento;
 import java.math.BigDecimal;
 
     public record DepartamentoResponseDto(
@@ -15,4 +16,4 @@ import java.math.BigDecimal;
             );
         }
     }
-
+}
