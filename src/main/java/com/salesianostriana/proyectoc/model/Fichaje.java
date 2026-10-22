@@ -21,6 +21,7 @@ public class Fichaje {
     private Tipo tipo;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     private Empleado empleado;
 }
