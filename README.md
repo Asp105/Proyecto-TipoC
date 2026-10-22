@@ -124,15 +124,21 @@ Los valores aceptados son `ENTRADA` y `SALIDA`.
 
 ## 🧪 Probar la API con Postman
 
-Crea una colección llamada **Registro de jornada** y añade las peticiones de este README. Para las peticiones con JSON, selecciona **Body → raw → JSON**.
+La colección de peticiones está incluida en el proyecto:
+
+`postman/Registro de jornada.postman_collection.json`
+
+Para cargarla, abre Postman, selecciona **Import → File** y elige ese archivo.
 
 Orden recomendado para probar el flujo:
 
-1. Crear un departamento y guardar su ID.
-2. Crear un empleado y guardar su ID.
-3. Asignarle el departamento.
-4. Registrar una entrada y después una salida.
-5. Consultar el historial del empleado.
+1. Crear un departamento.
+2. Crear un empleado.
+3. Asignarlo al departamento.
+4. Registrar entrada y salida.
+5. Consultar el historial de fichajes.
+
+La petición **Validar Departamento** contiene datos incorrectos a propósito y debe responder `400 Bad Request`.
 
 ## ⚠️ Respuestas de error
 
