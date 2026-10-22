@@ -51,6 +51,20 @@ public class DepartamentoController {
                     responseCode = "400",
                     description = "Datos de entrada inválidos",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Ya existe otro departamento con ese nombre",
+                    content = @Content(
+                            schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(value = """
+                        {
+                          "title": "Nombre de departamento duplicado",
+                          "status": 409,
+                          "detail": "Ya existe un departamento con el nombre: Desarrollo"
+                        }
+                        """)
+                    )
             )
     })
     @PostMapping
@@ -153,6 +167,20 @@ public class DepartamentoController {
                     responseCode = "404",
                     description = "No existe un departamento con ese identificador",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Ya existe otro departamento con ese nombre",
+                    content = @Content(
+                            schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(value = """
+                        {
+                          "title": "Nombre de departamento duplicado",
+                          "status": 409,
+                          "detail": "Ya existe un departamento con el nombre: Desarrollo"
+                        }
+                        """)
+                    )
             )
     })
     @PutMapping("/{id}")
@@ -174,6 +202,20 @@ public class DepartamentoController {
                     responseCode = "404",
                     description = "No existe un departamento con ese identificador",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "El departamento tiene empleados asignados",
+                    content = @Content(
+                            schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(value = """
+                        {
+                          "title": "Departamento con empleados",
+                          "status": 409,
+                          "detail": "No se puede eliminar el departamento 1 porque tiene empleados asignados"
+                        }
+                        """)
+                    )
             )
     })
     @DeleteMapping("/{id}")

@@ -52,8 +52,20 @@ public class EmpleadoController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Datos de entrada inválidos",
-                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))
+                    description = "Datos inválidos o presupuesto insuficiente",
+                    content = @Content(
+                            schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(value = """
+                        {
+                          "title": "Error de validación",
+                          "status": 400,
+                          "detail": "Hay campos con valores no válidos.",
+                          "errores": [
+                            "La suma de los salarios supera el presupuesto del departamento"
+                          ]
+                        }
+                        """)
+                    )
             )
     })
     @PostMapping
@@ -137,14 +149,26 @@ public class EmpleadoController {
                     )
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Datos de entrada inválidos",
-                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))
-            ),
-            @ApiResponse(
                     responseCode = "404",
                     description = "No existe un empleado con ese identificador",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos inválidos o presupuesto insuficiente",
+                    content = @Content(
+                            schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(value = """
+                        {
+                          "title": "Error de validación",
+                          "status": 400,
+                          "detail": "Hay campos con valores no válidos.",
+                          "errores": [
+                            "La suma de los salarios supera el presupuesto del departamento"
+                          ]
+                        }
+                        """)
+                    )
             )
     })
     @PutMapping("/{id}")
@@ -172,6 +196,20 @@ public class EmpleadoController {
                     responseCode = "404",
                     description = "No existe el empleado o el departamento indicado",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "El presupuesto del departamento no permite la asignación",
+                    content = @Content(
+                            schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(value = """
+                        {
+                          "title": "Presupuesto insuficiente",
+                          "status": 409,
+                          "detail": "La suma de los salarios supera el presupuesto del departamento"
+                        }
+                        """)
+                    )
             )
     })
     @PutMapping("/{empleadoId}/departamento/{deptoId}")
