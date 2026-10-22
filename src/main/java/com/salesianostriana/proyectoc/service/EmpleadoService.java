@@ -10,6 +10,7 @@ import com.salesianostriana.proyectoc.repository.DepartamentoRepository;
 import com.salesianostriana.proyectoc.repository.EmpleadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,14 +21,12 @@ public class EmpleadoService {
     private final EmpleadoRepository empleadoRepository;
     private final DepartamentoRepository departamentoRepository;
 
+    @Transactional(readOnly = true)
     public List<Empleado> getAllEmpleados() {
-        List<Empleado> result = empleadoRepository.findAll();
-        if (result.isEmpty()) {
-            throw new RuntimeException();
-        }
-        return result;
+        return  empleadoRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Empleado getEmpleadoById(Long id) {
         return empleadoRepository.findById(id)
                 .orElseThrow(()-> new EmpleadoNoEncontradoException(id));
@@ -52,7 +51,7 @@ public class EmpleadoService {
                         e.setSalario(editEmpleadoDto.salario());
                         return empleadoRepository.save(e);
                 })
-                .orElseThrow(() -> new RuntimeException(""));
+                .orElseThrow(() -> new EmpleadoNoEncontradoException(id));
     }
 
     public Empleado asignarDepartamento(Long empleadoId, Long departamentoId) {

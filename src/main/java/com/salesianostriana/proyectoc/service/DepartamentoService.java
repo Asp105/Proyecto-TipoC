@@ -6,6 +6,7 @@ import com.salesianostriana.proyectoc.model.Departamento;
 import com.salesianostriana.proyectoc.repository.DepartamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,14 +16,12 @@ public class DepartamentoService {
 
     private final DepartamentoRepository departamentoRepository;
 
+    @Transactional(readOnly = true)
     public List<Departamento> getAllDepartamentos() {
-        List<Departamento> result = departamentoRepository.findAll();
-        if (result.isEmpty()) {
-            throw new RuntimeException("Departamento no encontrado");
-        }
-        return result;
+        return departamentoRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Departamento getDepartamentoById(Long id) {
         return departamentoRepository.findById(id)
                 .orElseThrow(() -> new DepartamentoNoEncontradoException(id));
@@ -45,7 +44,7 @@ public class DepartamentoService {
                         d.setPresupuesto(editDepartamentoDto.presupuesto());
                         return departamentoRepository.save(d);
                 })
-                .orElseThrow(() -> new RuntimeException(""));
+                .orElseThrow(() -> new DepartamentoNoEncontradoException(id));
 
 
     }
