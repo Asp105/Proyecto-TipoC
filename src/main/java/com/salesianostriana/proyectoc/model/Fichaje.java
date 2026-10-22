@@ -1,13 +1,10 @@
 package com.salesianostriana.proyectoc.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
@@ -23,6 +20,7 @@ public class Fichaje {
     @Enumerated(EnumType.STRING)
     private Tipo tipo;
 
+    @ToString.Exclude
     @ManyToOne
     private Empleado empleado;
 }
