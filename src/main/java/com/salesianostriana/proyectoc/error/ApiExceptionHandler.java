@@ -39,6 +39,26 @@ public class ApiExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(DepartamentoConEmpleadosException.class)
+    public ProblemDetail departamentoConEmpleados(
+            DepartamentoConEmpleadosException ex
+    ) {
+        ProblemDetail problem =
+                ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problem.setTitle("Departamento con empleados");
+        return problem;
+    }
+
+    @ExceptionHandler(DepartamentoNombreDuplicadoException.class)
+    public ProblemDetail departamentoDuplicado(
+            DepartamentoNombreDuplicadoException ex
+    ) {
+        ProblemDetail problem =
+                ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problem.setTitle("Nombre de departamento duplicado");
+        return problem;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail validation(MethodArgumentNotValidException ex) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
