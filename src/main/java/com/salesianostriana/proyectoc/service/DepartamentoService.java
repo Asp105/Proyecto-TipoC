@@ -1,9 +1,12 @@
 package com.salesianostriana.proyectoc.service;
 
 import com.salesianostriana.proyectoc.dto.EditDepartamentoDto;
+import com.salesianostriana.proyectoc.error.DepartamentoConEmpleadosException;
 import com.salesianostriana.proyectoc.error.DepartamentoNoEncontradoException;
+import com.salesianostriana.proyectoc.error.DepartamentoNombreDuplicadoException;
 import com.salesianostriana.proyectoc.model.Departamento;
 import com.salesianostriana.proyectoc.repository.DepartamentoRepository;
+import com.salesianostriana.proyectoc.repository.EmpleadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,7 @@ import java.util.List;
 public class DepartamentoService {
 
     private final DepartamentoRepository departamentoRepository;
+    private final EmpleadoRepository empleadoRepository;
 
     @Transactional(readOnly = true)
     public List<Departamento> getAllDepartamentos() {
@@ -27,6 +31,11 @@ public class DepartamentoService {
     }
 
     public Departamento addDepartamento(EditDepartamentoDto dto) {
+
+        if (departamentoRepository.existsByName(dto.name())) {
+            throw new DepartamentoNombreDuplicadoException(dto.name());
+        }
+
         return departamentoRepository.save(
                 Departamento.builder()
                         .name(dto.name())
@@ -35,22 +44,31 @@ public class DepartamentoService {
         );
     }
 
-    public Departamento updateDepartamento (Long id, EditDepartamentoDto editDepartamentoDto) {
+    public Departamento updateDepartamento(Long id, EditDepartamentoDto dto) {
+        Departamento departamento = getDepartamentoById(id);
 
-        return departamentoRepository.findById(id)
-                .map( d -> {
-                        d.setName(editDepartamentoDto.name());
-                        d.setPresupuesto(editDepartamentoDto.presupuesto());
-                        return departamentoRepository.save(d);
-                })
-                .orElseThrow(() -> new DepartamentoNoEncontradoException(id));
+        boolean nombreUsado =
+                departamentoRepository.existsByName(dto.name())
+                        && !departamento.getName().equalsIgnoreCase(dto.name());
 
+        if (nombreUsado) {
+            throw new DepartamentoNombreDuplicadoException(dto.name());
+        }
 
+        departamento.setName(dto.name());
+        departamento.setPresupuesto(dto.presupuesto());
+
+        return departamentoRepository.save(departamento);
     }
 
     public void deleteDepartamento(Long id) {
         Departamento departamento = getDepartamentoById(id);
-        departamentoRepository.deleteById(id);
+
+        if (empleadoRepository.existsByDepartamentoId(id)) {
+            throw new DepartamentoConEmpleadosException(id);
+        }
+
+        departamentoRepository.delete(departamento);
     }
 
 

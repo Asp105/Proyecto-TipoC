@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
     List<Empleado> findByDepartamentoId(Long departamentoId);
+    boolean existsByDepartamentoId(Long departamentoId);
 }

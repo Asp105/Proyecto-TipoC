@@ -4,4 +4,6 @@ import com.salesianostriana.proyectoc.model.Departamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DepartamentoRepository
-        extends JpaRepository<Departamento, Long> {}
+        extends JpaRepository<Departamento, Long> {
+    boolean existsByName(String name);
+}
