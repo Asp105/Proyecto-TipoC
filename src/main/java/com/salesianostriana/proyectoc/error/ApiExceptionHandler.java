@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.stream.Stream;
+
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
@@ -64,10 +66,18 @@ public class ApiExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         problem.setTitle("Error de validación");
         problem.setDetail("Hay campos con valores no válidos.");
-        problem.setProperty("errores", ex.getBindingResult().getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .toList());
+        problem.setProperty(
+                "errores",
+                Stream.concat(
+                        ex.getBindingResult().getFieldErrors()
+                                .stream()
+                                .map(error -> error.getField() + ": "
+                                        + error.getDefaultMessage()),
+                        ex.getBindingResult().getGlobalErrors()
+                                .stream()
+                                .map(error -> error.getDefaultMessage())
+                ).toList()
+        );
         return problem;
     }
 

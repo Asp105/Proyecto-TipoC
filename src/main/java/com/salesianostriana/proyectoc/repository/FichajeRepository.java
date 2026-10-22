@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface FichajeRepository extends JpaRepository<Fichaje, Long> {
     List<Fichaje> findByEmpleadoIdOrderByMomentoDescIdDesc(Long empleadoId);
     Optional<Fichaje> findFirstByEmpleadoIdOrderByMomentoDescIdDesc(Long empleadoId);
+    void deleteByEmpleadoId(Long empleadoId);
 }

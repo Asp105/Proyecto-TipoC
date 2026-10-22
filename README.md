@@ -138,6 +138,20 @@ Orden recomendado para probar el flujo:
 4. Registrar entrada y salida.
 5. Consultar el historial de fichajes.
 
+## 🗃️ Consola H2
+
+Con la aplicación arrancada, abre:
+
+[http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+
+Usa estos datos de conexión:
+
+- JDBC URL: `jdbc:h2:mem:registrojornada`
+- Usuario: `sa`
+- Contraseña: vacía
+
+La base de datos es temporal y se reinicia al detener la aplicación.
+
 La petición **Validar Departamento** contiene datos incorrectos a propósito y debe responder `400 Bad Request`.
 
 ## ⚠️ Respuestas de error
@@ -146,7 +160,7 @@ La API utiliza respuestas `ProblemDetail` para comunicar los errores más habitu
 
 - `400 Bad Request`: los datos enviados no pasan las validaciones.
 - `404 Not Found`: el empleado o departamento solicitado no existe.
-- `409 Conflict`: se intenta repetir el último tipo de fichaje.
+- `409 Conflict`: fichaje duplicado, presupuesto insuficiente, nombre de departamento repetido o intento de borrar un departamento con empleados asignados.
 
 ## 🗂️ Estructura del proyecto
 

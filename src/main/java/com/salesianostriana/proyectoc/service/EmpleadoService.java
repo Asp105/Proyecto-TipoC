@@ -9,6 +9,7 @@ import com.salesianostriana.proyectoc.model.Departamento;
 import com.salesianostriana.proyectoc.model.Empleado;
 import com.salesianostriana.proyectoc.repository.DepartamentoRepository;
 import com.salesianostriana.proyectoc.repository.EmpleadoRepository;
+import com.salesianostriana.proyectoc.repository.FichajeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ public class EmpleadoService {
 
     private final EmpleadoRepository empleadoRepository;
     private final DepartamentoRepository departamentoRepository;
+    private final FichajeRepository fichajeRepository;
 
     @Transactional(readOnly = true)
     public List<Empleado> getAllEmpleados() {
@@ -123,9 +125,11 @@ public class EmpleadoService {
         return empleadoRepository.save(empleado);
     }
 
-    public void deleteEmpleado (Long id) {
+    @Transactional
+    public void deleteEmpleado(Long id) {
         Empleado empleado = getEmpleadoById(id);
-        empleadoRepository.deleteById(id);
+        fichajeRepository.deleteByEmpleadoId(id);
+        empleadoRepository.delete(empleado);
     }
 
 
