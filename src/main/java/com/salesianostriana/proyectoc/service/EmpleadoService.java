@@ -26,7 +26,6 @@ public class EmpleadoService {
         return  empleadoRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
     public Empleado getEmpleadoById(Long id) {
         return empleadoRepository.findById(id)
                 .orElseThrow(()-> new EmpleadoNoEncontradoException(id));
