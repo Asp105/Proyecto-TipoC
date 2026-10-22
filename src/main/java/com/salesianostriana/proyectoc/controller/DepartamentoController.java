@@ -40,7 +40,7 @@ public class DepartamentoController {
                             .toList());
         }
 
-        @GetMapping("/{id")
+        @GetMapping("/{id}")
         public ResponseEntity<DepartamentoResponseDto> getDepartamentoById(@PathVariable Long id) {
 
             return ResponseEntity.ok(DepartamentoResponseDto.from(departamentoService.getDepartamentoById(id)));
